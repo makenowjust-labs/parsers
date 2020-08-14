@@ -17,7 +17,7 @@ lazy val root = project
   .settings(
     organization := "",
     name := "stackparse",
-    version := "0.1.1-SNAPSHOT",
+    version := "0.1.0",
     console / initialCommands := """
       |import codes.quine.labo.stackparse._
       """.stripMargin,
