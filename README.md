@@ -1,6 +1,6 @@
-# miniparse
+# scala-labo-miniparse
 
-> A minimal & fast parser combinator library for Scala
+> A minimal & fast parser combinator library for Scala.
 
 ## License
 
