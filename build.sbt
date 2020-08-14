@@ -15,9 +15,9 @@ ThisBuild / scalacOptions ++= Seq(
 lazy val root = project
   .in(file("."))
   .settings(
-    organization := "",
+    organization := "codes.quine.labo",
     name := "stackparse",
-    version := "0.1.1-SNAPSHOT",
+    version := "0.1.0",
     console / initialCommands := """
       |import codes.quine.labo.stackparse._
       """.stripMargin,
