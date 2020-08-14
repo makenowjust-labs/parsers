@@ -97,13 +97,13 @@ object Parser {
   }
 
   case object Start extends Parser[Unit] {
-    def run[R](p: Parsing, k: Parsing.Cont[Unit,R]): Parsing.Action[R] =
+    def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
       if (p.pos == 0) Parsing.Success((), p, false, k)
       else Parsing.Failure(p.unexpected(toString), false, k)
   }
 
   case object End extends Parser[Unit] {
-    def run[R](p: Parsing, k: Parsing.Cont[Unit,R]): Parsing.Action[R] =
+    def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
       if (p.pos == p.input.length) Parsing.Success((), p, false, k)
       else Parsing.Failure(p.unexpected(toString), false, k)
   }
