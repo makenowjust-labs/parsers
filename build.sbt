@@ -2,7 +2,6 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / githubOwner := "MakeNowJust-Labo"
 ThisBuild / githubRepository := "scala-labo-miniparse"
-ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 
 ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / scalacOptions ++= Seq(
@@ -15,9 +14,9 @@ ThisBuild / scalacOptions ++= Seq(
 lazy val root = project
   .in(file("."))
   .settings(
-    organization := "",
+    organization := "codes.quine.labo",
     name := "miniparse",
-    version := "0.1.1-SNAPSHOT",
+    version := "0.1.0",
     console / initialCommands := """
       |import codes.quine.labo.miniparse._
       """.stripMargin,
@@ -26,9 +25,9 @@ lazy val root = project
       .filter(file => file.getName.startsWith("scala-library") && file.getName.endsWith(".jar"))
       .map(_ -> url(s"http://www.scala-lang.org/api/${scalaVersion.value}/"))
       .toMap,
-    // dependencies:
+    // Dependencies:
     libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
-    // test dependencies:
+    // Settings for test:
     libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
@@ -46,7 +45,7 @@ lazy val bench = project
       "-opt-inline-from:codes.quine.labo.miniparse.*",
       "-opt-warnings"
     ),
-    // dependencies:
+    // Dependencies:
     libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.2.2",
     libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
     libraryDependencies += "org.tpolecat" %% "atto-core" % "0.7.0"
