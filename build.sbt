@@ -1,5 +1,9 @@
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
+ThisBuild / githubOwner := "MakeNowJust-Labo"
+ThisBuild / githubRepository := "scala-labo-miniparse"
+ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
+
 ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / scalacOptions ++= Seq(
   "-encoding",
@@ -11,12 +15,10 @@ ThisBuild / scalacOptions ++= Seq(
 lazy val root = project
   .in(file("."))
   .settings(
+    organization := "",
     name := "miniparse",
-    organization := "codes.quine.labo",
     version := "0.1.0-SNAPSHOT",
     console / initialCommands := """
-      |import scala.util.chaining._
-      |
       |import codes.quine.labo.miniparse._
       """.stripMargin,
     // Set URL mapping of scala standard API for Scaladoc.
@@ -35,11 +37,7 @@ lazy val bench = project
   .in(file("bench"))
   .settings(
     name := "miniparse-bench",
-    organization := "codes.quine.labo",
-    version := "0.1.0-SNAPSHOT",
     console / initialCommands := """
-      |import scala.util.chaining._
-      |
       |import codes.quine.labo.miniparse._
       |import codes.quine.labo.miniparse.bench._
       """.stripMargin,
