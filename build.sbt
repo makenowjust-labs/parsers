@@ -1,5 +1,9 @@
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
+ThisBuild / githubOwner := "MakeNowJust-Labo"
+ThisBuild / githubRepository := "scala-labo-stackparse"
+ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
+
 ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / scalacOptions ++= Seq(
   "-encoding",
@@ -11,8 +15,8 @@ ThisBuild / scalacOptions ++= Seq(
 lazy val root = project
   .in(file("."))
   .settings(
+    organization := "",
     name := "stackparse",
-    organization := "codes.quine.labo",
     version := "0.1.0-SNAPSHOT",
     console / initialCommands := """
       |import codes.quine.labo.stackparse._
@@ -33,8 +37,6 @@ lazy val bench = project
   .in(file("bench"))
   .settings(
     name := "stackparse-bench",
-    organization := "codes.quine.labo",
-    version := "0.1.0-SNAPSHOT",
     console / initialCommands := """
       |import codes.quine.labo.stackparse._
       |import codes.quine.labo.stackparse.bench._
