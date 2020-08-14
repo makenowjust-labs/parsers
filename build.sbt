@@ -26,9 +26,9 @@ lazy val root = project
       .filter(file => file.getName.startsWith("scala-library") && file.getName.endsWith(".jar"))
       .map(_ -> url(s"http://www.scala-lang.org/api/${scalaVersion.value}/"))
       .toMap,
-    // dependencies:
+    // Dependencies:
     libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.1.9",
-    // test dependencies:
+    // Settings for test:
     libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
@@ -41,7 +41,7 @@ lazy val bench = project
       |import codes.quine.labo.stackparse._
       |import codes.quine.labo.stackparse.bench._
       """.stripMargin,
-    // dependencies:
+    // Dependencies:
     libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.2.2",
     libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
   )
