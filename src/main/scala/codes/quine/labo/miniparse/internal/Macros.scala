@@ -49,7 +49,7 @@ object Macros {
 
     reify {
       val s0 = s.splice
-      var ctx = ctx0.splice
+      val ctx = ctx0.splice
       var n = 0
       while (ctx.pos < ctx.input.length && s0.contains(ctx.input.charAt(ctx.pos))) {
         ctx.pos += 1
