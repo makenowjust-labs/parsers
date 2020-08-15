@@ -11,4 +11,4 @@ jobs:
       - name: Format
         run: sbt scalafmtCheckAll scalafmtSbtCheck 'scalafixAll --check'
         env:
-          GITHUB_TOKEN: ""
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
