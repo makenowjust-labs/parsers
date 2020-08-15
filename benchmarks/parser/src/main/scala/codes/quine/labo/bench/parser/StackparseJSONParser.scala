@@ -4,7 +4,6 @@ package bench.parser
 import scala.annotation.switch
 
 import stackparse._
-
 import JSON._
 
 object StackparseJSONParser {

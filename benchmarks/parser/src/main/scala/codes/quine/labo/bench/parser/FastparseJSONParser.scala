@@ -2,7 +2,8 @@ package codes.quine.labo.bench.parser
 
 import scala.annotation.switch
 
-import fastparse._, NoWhitespace._
+import fastparse.NoWhitespace._
+import fastparse._
 
 import JSON._
 
