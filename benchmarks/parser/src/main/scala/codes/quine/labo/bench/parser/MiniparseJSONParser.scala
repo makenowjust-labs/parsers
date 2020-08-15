@@ -4,7 +4,6 @@ package bench.parser
 import scala.annotation.switch
 
 import miniparse._
-
 import JSON._
 
 object MiniparseJSONParser {

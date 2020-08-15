@@ -26,5 +26,5 @@ class Bench {
 }
 
 object Bench {
-  val source = scala.io.Source.fromInputStream(getClass.getResourceAsStream("/posts.json")).mkString
+  val source: String = scala.io.Source.fromInputStream(getClass.getResourceAsStream("/posts.json")).mkString
 }
