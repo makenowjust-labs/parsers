@@ -40,7 +40,7 @@ object Sequencer extends LowPrioritySequencer {
   }
 
   implicit def tuple4[A, B, C, D]: Aux[(A, B, C), D, (A, B, C, D)] =
-    Tuple3Sequencer.asInstanceOf[Aux[(A, B, C), D, (A, B, C, D)]]
+    Tuple4Sequencer.asInstanceOf[Aux[(A, B, C), D, (A, B, C, D)]]
 
   private object Tuple4Sequencer extends Sequencer[(Any, Any, Any), Any] {
     type Result = (Any, Any, Any, Any)

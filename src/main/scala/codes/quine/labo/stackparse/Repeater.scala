@@ -1,7 +1,5 @@
 package codes.quine.labo.stackparse
 
-import scala.collection.mutable
-
 trait Repeater[-A] {
   type Result
 
