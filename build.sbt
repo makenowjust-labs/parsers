@@ -31,24 +31,3 @@ lazy val root = project
     libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
-
-lazy val bench = project
-  .in(file("bench"))
-  .settings(
-    name := "miniparse-bench",
-    console / initialCommands := """
-      |import codes.quine.labo.miniparse._
-      |import codes.quine.labo.miniparse.bench._
-      """.stripMargin,
-    scalacOptions ++= Seq(
-      "-opt:l:inline",
-      "-opt-inline-from:codes.quine.labo.miniparse.*",
-      "-opt-warnings"
-    ),
-    // Dependencies:
-    libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.2.2",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
-    libraryDependencies += "org.tpolecat" %% "atto-core" % "0.7.0"
-  )
-  .dependsOn(root)
-  .enablePlugins(JmhPlugin)
