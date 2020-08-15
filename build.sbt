@@ -32,18 +32,3 @@ lazy val root = project
     libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
-
-lazy val bench = project
-  .in(file("bench"))
-  .settings(
-    name := "stackparse-bench",
-    console / initialCommands := """
-      |import codes.quine.labo.stackparse._
-      |import codes.quine.labo.stackparse.bench._
-      """.stripMargin,
-    // Dependencies:
-    libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.2.2",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
-  )
-  .dependsOn(root)
-  .enablePlugins(JmhPlugin)
