@@ -1,9 +1,8 @@
 package codes.quine.labo
 
 import scala.annotation.tailrec
-import scala.language.implicitConversions
-
 import scala.language.experimental.macros
+import scala.language.implicitConversions
 
 package object miniparse {
   type P[+T] = Parsing[T]
@@ -55,8 +54,7 @@ package object miniparse {
   def CharIn(s: String)(implicit ctx: P[Any]): P[Unit] =
     macro internal.Macros.CharIn
 
-  @inline def CharsWhile(p: Char => Boolean, min: Int = 1)(implicit ctx0: P[Any]): P[Unit] = {
-    var ctx = ctx0
+  @inline def CharsWhile(p: Char => Boolean, min: Int = 1)(implicit ctx: P[Any]): P[Unit] = {
     var n = 0
     while (ctx.pos < ctx.input.length && p(ctx.input.charAt(ctx.pos))) {
       ctx.pos += 1
