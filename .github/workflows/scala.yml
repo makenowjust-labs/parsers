@@ -13,6 +13,6 @@ jobs:
         env:
           GITHUB_TOKEN: ""
       - name: Format
-        run: sbt scalafmtCheckAll bench/scalafmtAll scalafmtSbtCheck
+        run: sbt scalafmtCheckAll scalafmtSbtCheck
         env:
           GITHUB_TOKEN: ""
