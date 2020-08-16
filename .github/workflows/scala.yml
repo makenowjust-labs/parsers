@@ -11,8 +11,8 @@ jobs:
       - name: Test
         run: sbt test
         env:
-          GITHUB_TOKEN: ""
-      - name: Format
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Format and Lint
         run: sbt scalafmtCheckAll scalafmtSbtCheck 'scalafixAll --check'
         env:
-          GITHUB_TOKEN: ""
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
