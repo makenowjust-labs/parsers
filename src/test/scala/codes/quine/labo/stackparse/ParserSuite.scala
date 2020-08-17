@@ -217,4 +217,25 @@ object ParserSuite extends SimpleTestSuite {
     assertFailure("aa", ("a" ~ "b").named("foo"), "expected: foo", 0)
     assertFailure("abc", ("a" ~ "b").named("foo") ~ "a", "expected: \"a\"", 2)
   }
+
+  test("Parser#/") {
+    assertEquals(AnyChar./.toString, "AnyChar./")
+    assertEquals((AnyChar ~ AnyChar)./.toString, "(AnyChar ~ AnyChar)./")
+    assertFailure("aa", AnyChar./ ~ "b" | "aa", "expected: \"b\"", 1)
+  }
+
+  test("Pass") {
+    assertEquals(Pass.toString, "Pass")
+    assertEquals(Pass(0).toString, "Pass(0)")
+    assertSuccess("", Pass(0), 0, 0)
+    assertSuccess("a", Pass(0), 0, 0)
+    assertSuccess("", Pass, (), 0)
+  }
+
+  test("Fail") {
+    assertEquals(Fail.toString, "Fail")
+    assertEquals(Fail("foo").toString, "Fail(\"foo\")")
+    assertFailure("", Fail, "fail", 0)
+    assertFailure("", Fail("foo"), "foo", 0)
+  }
 }

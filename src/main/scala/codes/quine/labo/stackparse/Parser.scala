@@ -46,7 +46,7 @@ object Parser {
   final case class Literal(string: String) extends Parser[Unit] {
     def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
       if (p.input.startsWith(string, p.pos)) Parsing.Success((), p.advance(string.length), false, k)
-      else Parsing.Failure(p.unexpected(name), false, k)
+      else Parsing.Failure(p.unexpected(toString), false, k)
 
     lazy val name: String = "\"" + Util.escape(string) + "\""
     override def toString: String = name
@@ -55,7 +55,7 @@ object Parser {
   final case class CharIn(string: String) extends Parser[Unit] {
     def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
       if (p.pos < p.input.length && string.contains(p.input.charAt(p.pos))) Parsing.Success((), p.advance(1), false, k)
-      else Parsing.Failure(p.unexpected(name), false, k)
+      else Parsing.Failure(p.unexpected(toString), false, k)
 
     lazy val name: String = "CharIn(\"" + Util.escape(string) + "\")"
     override def toString: String = name
@@ -76,7 +76,7 @@ object Parser {
         pos += 1
       }
       if (min <= pos - p.pos) Parsing.Success((), p.reset(pos), false, k)
-      else Parsing.Failure(p.unexpected(name), false, k)
+      else Parsing.Failure(p.unexpected(toString), false, k)
     }
 
     lazy val name: String = "CharsWhileIn(\"" + Util.escape(string) + "\")"

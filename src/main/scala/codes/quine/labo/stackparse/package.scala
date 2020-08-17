@@ -40,7 +40,11 @@ package object stackparse {
 
   def P[T](parser: => P[T])(implicit name: sourcecode.Name): P[T] = Parser.Delay(() => parser, name.value)
 
+  def Pass: P[Unit] = Parser.Pass(())
+
   def Pass[T](value: T): P[T] = Parser.Pass(value)
+
+  def Fail: P[Nothing] = Parser.Fail("fail")
 
   def Fail(message: String): P[Nothing] = Parser.Fail(message)
 }
