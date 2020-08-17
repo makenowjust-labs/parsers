@@ -36,8 +36,8 @@ sealed trait Parser[+T] {
   def flatMap[U](f: T => Parser[U]): Parser[U] =
     Parser.FlatMap(this, f)
 
-  def filter(f: T => Boolean, message: String = "filter"): Parser[T] =
-    Parser.Filter(this, f, message)
+  def filter(f: T => Boolean): Parser[T] =
+    Parser.Filter(this, f)
 
   def named(name: String): Parser[T] = Parser.Named(this, name)
 }
@@ -94,6 +94,12 @@ object Parser {
     }
 
     override def toString: String = "CharsWhile(...)"
+  }
+
+  case object AnyChar extends Parser[Unit] {
+    def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
+      if (p.pos < p.input.length) Parsing.Success((), p.advance(1), false, k)
+      else Parsing.Failure(p.unexpected(toString), false, k)
   }
 
   case object Start extends Parser[Unit] {
@@ -207,7 +213,11 @@ object Parser {
 
   final case class NegativeLookAhead(parser: Parser[Any]) extends Parser[Unit] {
     def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
-      Parsing.Call(parser, p, new Parsing.NegativeLookAheadCont(p.pos, k))
+      // Set `p.errorPos` as `Int.MaxValue` for preventing to override an error message.
+      // Generally an error message in negative look-ahead is not useful.
+      Parsing.Call(parser, p.copy(errorPos = Int.MaxValue), new Parsing.NegativeLookAheadCont(p.pos, p.errorPos, message, k))
+
+    lazy val message: String = s"unexpected: $parser"
 
     override def toString: String = s"&!($parser)"
   }
@@ -234,15 +244,14 @@ object Parser {
       }
   }
 
-  final case class Filter[T](parser: Parser[T], f: T => Boolean, message: String) extends Parser[T] {
+  final case class Filter[T](parser: Parser[T], f: T => Boolean) extends Parser[T] {
     def run[R](p: Parsing, k: Parsing.Cont[T, R]): Parsing.Action[R] =
-      Parsing.Call(parser, p, new Parsing.FilterCont(f, message, k))
+      Parsing.Call(parser, p, new Parsing.FilterCont(f, p.pos, k))
 
     override def toString: String = {
-      val args = if (message == "filter") "" else ", \"" + Util.escape(message) + "\""
       parser match {
-        case _: Sequence[_, _, _] | _: Alternative[_] => s"($parser).filter(...$args)"
-        case _                                        => s"$parser.filter(...$args)"
+        case _: Sequence[_, _, _] | _: Alternative[_] => s"($parser).filter(...)"
+        case _                                        => s"$parser.filter(...)"
       }
     }
   }

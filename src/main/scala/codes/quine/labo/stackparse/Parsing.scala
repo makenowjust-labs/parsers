@@ -7,7 +7,7 @@ final case class Parsing(
     expected: Seq[String] = Seq.empty,
     errorPos: Int = -1,
     name: String = "",
-    namePos: Int = -1
+    namePos: Int = Int.MaxValue
 ) {
   def reset(pos: Int): Parsing = copy(pos = pos)
 
@@ -16,13 +16,13 @@ final case class Parsing(
   def named(name: String, pos: Int = this.pos): Parsing = copy(name = name, namePos = pos)
 
   def unexpected(name: String, pos: Int = this.pos): Parsing =
-    if (pos <= namePos && name != this.name) unexpected(this.name, namePos)
+    if (namePos <= pos && name != this.name) unexpected(this.name, namePos)
     else if (errorPos < pos) copy(errorPos = pos, expected = Seq(name), message = None)
     else if (errorPos == pos) copy(expected = expected :+ name, message = None)
     else this
 
   def fail(message: String, pos: Int = this.pos): Parsing =
-    if (pos <= namePos) unexpected(this.name, namePos)
+    if (namePos <= pos) unexpected(this.name, namePos)
     else if (errorPos < pos) copy(errorPos = pos, expected = Seq.empty, message = Some(message))
     else if (errorPos == pos && expected.isEmpty) copy(expected = Seq.empty, message = Some(message))
     else this
@@ -95,11 +95,11 @@ object Parsing {
         val values1 = rep.append(values, value)
         val count1 = count + 1
         if (count1 == max) Success(values1, p, cut0 || cut, cont)
-        else Call(parser, p, new RepeatCont(parser, min, max, rep, pos, cut0 || cut, count1, values1, cont))
+        else Call(parser, p, new RepeatCont(parser, min, max, rep, p.pos, cut0 || cut, count1, values1, cont))
       }
 
     def fail(p: Parsing, cut: Boolean): Action[R] =
-      if (!cut && min <= count) Success(values, p, cut0, cont)
+      if (!cut && min <= count) Success(values, p.reset(pos), cut0, cont)
       else Failure(p, cut0 || cut, cont)
   }
 
@@ -121,9 +121,9 @@ object Parsing {
     def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, cut, cont)
   }
 
-  final class NegativeLookAheadCont[R](val pos: Int, val cont: Cont[Unit, R]) extends Cont[Any, R] {
-    def succeed(value: Any, p: Parsing, cut: Boolean): Action[R] = Failure(p.fail("negative look ahead"), cut, cont)
-    def fail(p: Parsing, cut: Boolean): Action[R] = Success((), p.reset(pos), cut, cont)
+  final class NegativeLookAheadCont[R](val pos: Int, val errorPos: Int, val message: String, val cont: Cont[Unit, R]) extends Cont[Any, R] {
+    def succeed(value: Any, p: Parsing, cut: Boolean): Action[R] = Failure(p.copy(errorPos = errorPos).fail(message, pos), cut, cont)
+    def fail(p: Parsing, cut: Boolean): Action[R] = Success((), p.copy(errorPos = errorPos).reset(pos), cut, cont)
   }
 
   final class MapCont[T, U, R](val f: T => U, val cont: Cont[U, R]) extends Cont[T, R] {
@@ -141,9 +141,9 @@ object Parsing {
     def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, cut1 || cut, cont)
   }
 
-  final class FilterCont[T, R](val f: T => Boolean, val message: String, val cont: Cont[T, R]) extends Cont[T, R] {
+  final class FilterCont[T, R](val f: T => Boolean, val pos: Int, val cont: Cont[T, R]) extends Cont[T, R] {
     def succeed(value: T, p: Parsing, cut: Boolean): Action[R] =
-      if (f(value)) Success(value, p, cut, cont) else Failure(p.fail(message), cut, cont)
+      if (f(value)) Success(value, p, cut, cont) else Failure(p.fail("filter", pos), cut, cont)
     def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, cut, cont)
   }
 

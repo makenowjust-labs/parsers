@@ -31,16 +31,19 @@ object Sequencer extends LowPrioritySequencer {
     type Result = Any
     def apply(a: Unit, b: Any): Any = b
   }
+}
 
-  implicit def tuple3[A, B, C]: Aux[(A, B), C, (A, B, C)] = Tuple3Sequencer.asInstanceOf[Aux[(A, B), C, (A, B, C)]]
+private[stackparse] trait LowPrioritySequencer extends LowerPrioritySequencer {
+  implicit def tuple3[A, B, C]: Sequencer.Aux[(A, B), C, (A, B, C)] =
+    Tuple3Sequencer.asInstanceOf[Sequencer.Aux[(A, B), C, (A, B, C)]]
 
   private object Tuple3Sequencer extends Sequencer[(Any, Any), Any] {
     type Result = (Any, Any, Any)
     def apply(a: (Any, Any), b: Any): (Any, Any, Any) = (a._1, a._2, b)
   }
 
-  implicit def tuple4[A, B, C, D]: Aux[(A, B, C), D, (A, B, C, D)] =
-    Tuple4Sequencer.asInstanceOf[Aux[(A, B, C), D, (A, B, C, D)]]
+  implicit def tuple4[A, B, C, D]: Sequencer.Aux[(A, B, C), D, (A, B, C, D)] =
+    Tuple4Sequencer.asInstanceOf[Sequencer.Aux[(A, B, C), D, (A, B, C, D)]]
 
   private object Tuple4Sequencer extends Sequencer[(Any, Any, Any), Any] {
     type Result = (Any, Any, Any, Any)
@@ -48,7 +51,7 @@ object Sequencer extends LowPrioritySequencer {
   }
 }
 
-private[stackparse] trait LowPrioritySequencer {
+private[stackparse] trait LowerPrioritySequencer {
   implicit def tuple2[A, B]: Sequencer.Aux[A, B, (A, B)] = Tuple2Sequencer.asInstanceOf[Sequencer.Aux[A, B, (A, B)]]
 
   private object Tuple2Sequencer extends Sequencer[Any, Any] {

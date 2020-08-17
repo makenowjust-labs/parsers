@@ -28,6 +28,8 @@ package object stackparse {
 
   def CharsWhile(f: Char => Boolean, min: Int = 1): P[Unit] = Parser.CharsWhile(f, min)
 
+  val AnyChar: P[Unit] = Parser.AnyChar
+
   val Start: P[Unit] = Parser.Start
 
   val End: P[Unit] = Parser.End
