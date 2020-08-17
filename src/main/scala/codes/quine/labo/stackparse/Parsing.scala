@@ -116,6 +116,16 @@ object Parsing {
       if (cut) Failure(p, true, cont) else Call(parser2, p.reset(pos), cont)
   }
 
+  final class LookAheadCont[T, R](val pos: Int, val cont: Cont[T, R]) extends Cont[T, R] {
+    def succeed(value: T, p: Parsing, cut: Boolean): Action[R] = Success(value, p.reset(pos), cut, cont)
+    def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, cut, cont)
+  }
+
+  final class NegativeLookAheadCont[R](val pos: Int, val cont: Cont[Unit, R]) extends Cont[Any, R] {
+    def succeed(value: Any, p: Parsing, cut: Boolean): Action[R] = Failure(p.fail("negative look ahead"), cut, cont)
+    def fail(p: Parsing, cut: Boolean): Action[R] = Success((), p.reset(pos), cut, cont)
+  }
+
   final class MapCont[T, U, R](val f: T => U, val cont: Cont[U, R]) extends Cont[T, R] {
     def succeed(value: T, p: Parsing, cut: Boolean): Action[R] = Success(f(value), p, cut, cont)
     def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, cut, cont)

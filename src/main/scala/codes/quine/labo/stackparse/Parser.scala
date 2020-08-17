@@ -198,6 +198,20 @@ object Parser {
     override def toString: String = s"$parser1 | $parser2"
   }
 
+  final case class LookAhead[T](parser: Parser[T]) extends Parser[T] {
+    def run[R](p: Parsing, k: Parsing.Cont[T, R]): Parsing.Action[R] =
+      Parsing.Call(parser, p, new Parsing.LookAheadCont(p.pos, k))
+
+    override def toString: String = s"&?($parser)"
+  }
+
+  final case class NegativeLookAhead(parser: Parser[Any]) extends Parser[Unit] {
+    def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
+      Parsing.Call(parser, p, new Parsing.NegativeLookAheadCont(p.pos, k))
+
+    override def toString: String = s"&!($parser)"
+  }
+
   final case class Map[T, U](parser: Parser[T], f: T => U) extends Parser[U] {
     def run[R](p: Parsing, k: Parsing.Cont[U, R]): Parsing.Action[R] =
       Parsing.Call(parser, p, new Parsing.MapCont(f, k))

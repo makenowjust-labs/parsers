@@ -32,6 +32,10 @@ package object stackparse {
 
   val End: P[Unit] = Parser.End
 
+  def &?[T](parser: P[T]): P[T] = Parser.LookAhead(parser)
+
+  def &!(parser: P[Any]): P[Unit] = Parser.NegativeLookAhead(parser)
+
   def P[T](parser: => P[T])(implicit name: sourcecode.Name): P[T] = Parser.Delay(() => parser, name.value)
 
   def Pass[T](value: T): P[T] = Parser.Pass(value)
