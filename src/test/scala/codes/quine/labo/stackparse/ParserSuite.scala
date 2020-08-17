@@ -171,7 +171,7 @@ object ParserSuite extends SimpleTestSuite {
     assertSuccess("b", "a".! | "b".!, "b", 1)
     assertFailure("c", "a" | "b", "expected: \"a\", \"b\"", 0)
     assertFailure("az", "a" ~ "b" | "b" ~ "c", "expected: \"b\"", 1)
-    assertFailure("az",  "b" ~ "c" | "a" ~ "b", "expected: \"b\"", 1)
+    assertFailure("az", "b" ~ "c" | "a" ~ "b", "expected: \"b\"", 1)
     assertSuccess("ac", "a" ~ "b" | "ac", (), 2)
     assertFailure("ac", "a" ~/ "b" | "ac", "expected: \"b\"", 1)
     assertFailure("abc", ("a" ~/ "b" | "ac") ~ "d" | "abc", "expected: \"d\"", 2)

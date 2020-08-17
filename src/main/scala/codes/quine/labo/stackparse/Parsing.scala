@@ -121,8 +121,10 @@ object Parsing {
     def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, cut, cont)
   }
 
-  final class NegativeLookAheadCont[R](val pos: Int, val errorPos: Int, val message: String, val cont: Cont[Unit, R]) extends Cont[Any, R] {
-    def succeed(value: Any, p: Parsing, cut: Boolean): Action[R] = Failure(p.copy(errorPos = errorPos).fail(message, pos), cut, cont)
+  final class NegativeLookAheadCont[R](val pos: Int, val errorPos: Int, val message: String, val cont: Cont[Unit, R])
+      extends Cont[Any, R] {
+    def succeed(value: Any, p: Parsing, cut: Boolean): Action[R] =
+      Failure(p.copy(errorPos = errorPos).fail(message, pos), cut, cont)
     def fail(p: Parsing, cut: Boolean): Action[R] = Success((), p.copy(errorPos = errorPos).reset(pos), cut, cont)
   }
 

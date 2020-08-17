@@ -215,7 +215,11 @@ object Parser {
     def run[R](p: Parsing, k: Parsing.Cont[Unit, R]): Parsing.Action[R] =
       // Set `p.errorPos` as `Int.MaxValue` for preventing to override an error message.
       // Generally an error message in negative look-ahead is not useful.
-      Parsing.Call(parser, p.copy(errorPos = Int.MaxValue), new Parsing.NegativeLookAheadCont(p.pos, p.errorPos, message, k))
+      Parsing.Call(
+        parser,
+        p.copy(errorPos = Int.MaxValue),
+        new Parsing.NegativeLookAheadCont(p.pos, p.errorPos, message, k)
+      )
 
     lazy val message: String = s"unexpected: $parser"
 
