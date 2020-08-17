@@ -39,6 +39,6 @@ lazy val parser = project
     libraryDependencies += "codes.quine.labo" %% "stackparse" % "0.1.0",
     libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.2.2",
     libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
-    libraryDependencies += "org.tpolecat" %% "atto-core" % "0.7.0"
+    libraryDependencies += "org.tpolecat" %% "atto-core" % "0.7.2"
   )
   .enablePlugins(JmhPlugin)
