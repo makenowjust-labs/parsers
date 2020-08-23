@@ -1,3 +1,0 @@
-# dev
-
-An initial release.
