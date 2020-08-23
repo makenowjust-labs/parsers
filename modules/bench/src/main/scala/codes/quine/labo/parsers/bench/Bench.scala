@@ -1,5 +1,5 @@
-package codes.quine.labo
-package bench.parser
+package codes.quine.labo.parsers
+package bench
 
 import org.openjdk.jmh.annotations._
 
@@ -13,8 +13,8 @@ class Bench {
     FastparseJSONParser.parse(Bench.source)
 
   @Benchmark
-  def measureMiniparse(): miniparse.Parsed[JSON] =
-    MiniparseJSONParser.parse(Bench.source)
+  def measureInlineparse(): inlineparse.Parsed[JSON] =
+    InlineparseJSONParser.parse(Bench.source)
 
   @Benchmark
   def measureParserCombinators(): ParserCombinatorsJSONParser.ParseResult[JSON] =

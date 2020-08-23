@@ -1,4 +1,4 @@
-package codes.quine.labo.bench.parser
+package codes.quine.labo.parsers.bench
 
 trait JSON
 

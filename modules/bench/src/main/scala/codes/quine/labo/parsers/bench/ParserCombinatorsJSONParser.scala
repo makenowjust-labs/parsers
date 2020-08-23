@@ -1,4 +1,4 @@
-package codes.quine.labo.bench.parser
+package codes.quine.labo.parsers.bench
 
 import scala.annotation.switch
 import scala.util.parsing.combinator._

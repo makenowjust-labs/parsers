@@ -22,7 +22,31 @@ ThisBuild / scalafixDependencies += "com.github.vovapolu" %% "scaluzzi" % "0.1.1
 lazy val root = project
   .in(file("."))
   .settings(publish / skip := true)
-  .aggregate(common, inlineparse, stackparse)
+  .aggregate(bench, common, inlineparse, stackparse)
+
+lazy val bench = project
+  .in(file("modules/bench"))
+  .settings(
+    publish / skip := true,
+    console / initialCommands := s"""
+    |import codes.quine.labo.parsers.bench._
+    """.stripMargin,
+    Compile / console / scalacOptions -= "-Wunused",
+    scalacOptions ++= Seq(
+      "-opt:l:inline",
+      "-opt-inline-from:codes.quine.labo.parsers.inlineparse.*",
+      "-opt-warnings"
+    ),
+    // Dependencies:
+    libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.3.0",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+    libraryDependencies += "org.tpolecat" %% "atto-core" % "0.8.0",
+    // Settings for test:
+    libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
+    testFrameworks += new TestFramework("minitest.runner.Framework")
+  )
+  .dependsOn(inlineparse, stackparse)
+  .enablePlugins(JmhPlugin)
 
 def moduleSettings(moduleName: String) =
   Seq(

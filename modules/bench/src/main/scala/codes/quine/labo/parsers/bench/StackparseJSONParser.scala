@@ -1,5 +1,5 @@
-package codes.quine.labo
-package bench.parser
+package codes.quine.labo.parsers
+package bench
 
 import scala.annotation.switch
 

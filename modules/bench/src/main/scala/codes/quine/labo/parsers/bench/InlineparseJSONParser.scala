@@ -1,28 +1,27 @@
-package codes.quine.labo.bench.parser
+package codes.quine.labo.parsers
+package bench
 
 import scala.annotation.switch
 
-import fastparse.NoWhitespace._
-import fastparse._
-
+import inlineparse._
 import JSON._
 
-object FastparseJSONParser {
+object InlineparseJSONParser {
   def space[_: P]: P[Unit] = CharsWhileIn(" \r\n", 0)
   def digits[_: P]: P[Unit] = CharsWhileIn("0123456789")
-  def exponent[_: P]: P[Unit] = CharIn("eE") ~ CharIn("+\\-").? ~ digits
+  def exponent[_: P]: P[Unit] = CharIn("eE") ~ CharIn("+-").? ~ digits
   def fractional[_: P]: P[Unit] = "." ~ digits
   def integral[_: P]: P[Unit] = "0" | CharIn("123456789") ~ digits.?
 
   def number[_: P]: P[JSON] =
-    (CharIn("+\\-").? ~ integral ~ fractional.? ~ exponent.?).!.map(s => JSONNumber(s.toDouble)).opaque("<number>")
+    (CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?).!.map(s => JSONNumber(s.toDouble)).named("<number>")
 
   def `null`[_: P]: P[JSON] = "null" ~ Pass(JSONNull)
   def `true`[_: P]: P[JSON] = "true" ~ Pass(JSONBoolean(true))
   def `false`[_: P]: P[JSON] = "false" ~ Pass(JSONBoolean(false))
 
   def hexDigit[_: P]: P[Unit] = CharIn("0123456789abcdefABCDEF")
-  def unicodeEscape[_: P]: P[Char] = "u" ~ hexDigit.rep(exactly = 4).!.map(s => Integer.parseInt(s, 16).toChar)
+  def unicodeEscape[_: P]: P[Char] = "u" ~ hexDigit.count(4).!.map(s => Integer.parseInt(s, 16).toChar)
   def simpleEscape[_: P]: P[Char] =
     CharIn("\"\\/bfnrt").!.map(s =>
       (s.charAt(0): @switch) match {
@@ -36,7 +35,7 @@ object FastparseJSONParser {
     )
   def escape[_: P]: P[Char] = "\\" ~/ (simpleEscape | unicodeEscape)
   def stringContent[_: P]: P[String] = CharsWhile(c => c != '"' && c != '\\').! | escape.map(String.valueOf(_))
-  def key[_: P]: P[String] = ("\"" ~/ stringContent.rep.map(_.mkString) ~ "\"").opaque("<string>")
+  def key[_: P]: P[String] = ("\"" ~/ stringContent.rep.map(_.mkString) ~ "\"").named("<string>")
   def string[_: P]: P[JSON] = key.map(JSONString(_))
 
   def arrayContent[_: P]: P[Seq[JSON]] =
@@ -60,5 +59,5 @@ object FastparseJSONParser {
   def entry[_: P]: P[JSON] = space ~ json ~ End
 
   def parse(input: String): Parsed[JSON] =
-    fastparse.parse(input, entry(_))
+    inlineparse.parse(input, entry(_))
 }
