@@ -1,3 +1,3 @@
 # parsers-core
 
-> Common utilities for parser combinators.
+> Common utilities for parser combinator.
