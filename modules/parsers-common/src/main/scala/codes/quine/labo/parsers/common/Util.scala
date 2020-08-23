@@ -1,4 +1,4 @@
-package codes.quine.labo.parsers.stackparse
+package codes.quine.labo.parsers.common
 
 object Util {
   def escape(s: String): String =

@@ -1,6 +1,9 @@
-package codes.quine.labo.parsers.stackparse
+package codes.quine.labo.parsers
+package stackparse
 
 import scala.annotation.tailrec
+
+import common.Util
 
 sealed trait Parser[+T] {
   def run[R](p: Parsing, k: Parsing.Cont[T, R]): Parsing.Action[R]

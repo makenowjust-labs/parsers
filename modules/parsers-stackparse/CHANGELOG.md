@@ -1,3 +1,10 @@
+# dev
+
+Changes:
+
+  - Rename to `parsers-stackparse`.
+  - Split common utilities into `parsers-core`.
+
 # 0.1.1 (2020-08-17)
 
 Changes:

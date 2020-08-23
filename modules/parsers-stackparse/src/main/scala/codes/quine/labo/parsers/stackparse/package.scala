@@ -4,6 +4,15 @@ import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 package object stackparse {
+  type Optioner[-A] = common.Optioner[A]
+  val Optioner = common.Optioner
+  type Repeater[-A] = common.Repeater[A]
+  val Repeater = common.Repeater
+  type Sequencer[-A, -B] = common.Sequencer[A, B]
+  val Sequencer = common.Sequencer
+  type Parsed[+A] = common.Parsed[A]
+  val Parsed = common.Parsed
+
   type P[+T] = Parser[T]
 
   def parse[T](input: String, parser: P[T]): Parsed[T] = {

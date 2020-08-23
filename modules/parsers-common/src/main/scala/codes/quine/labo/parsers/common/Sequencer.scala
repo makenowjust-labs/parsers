@@ -1,4 +1,4 @@
-package codes.quine.labo.parsers.stackparse
+package codes.quine.labo.parsers.common
 
 trait Sequencer[-A, -B] {
   type Result
@@ -33,7 +33,7 @@ object Sequencer extends LowPrioritySequencer {
   }
 }
 
-private[stackparse] trait LowPrioritySequencer extends LowerPrioritySequencer {
+private[common] trait LowPrioritySequencer extends LowerPrioritySequencer {
   implicit def tuple3[A, B, C]: Sequencer.Aux[(A, B), C, (A, B, C)] =
     Tuple3Sequencer.asInstanceOf[Sequencer.Aux[(A, B), C, (A, B, C)]]
 
@@ -51,7 +51,7 @@ private[stackparse] trait LowPrioritySequencer extends LowerPrioritySequencer {
   }
 }
 
-private[stackparse] trait LowerPrioritySequencer {
+private[common] trait LowerPrioritySequencer {
   implicit def tuple2[A, B]: Sequencer.Aux[A, B, (A, B)] = Tuple2Sequencer.asInstanceOf[Sequencer.Aux[A, B, (A, B)]]
 
   private object Tuple2Sequencer extends Sequencer[Any, Any] {

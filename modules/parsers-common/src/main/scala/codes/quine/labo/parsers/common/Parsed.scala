@@ -1,4 +1,4 @@
-package codes.quine.labo.parsers.stackparse
+package codes.quine.labo.parsers.common
 
 sealed trait Parsed[+T] {
   def isSuccess: Boolean

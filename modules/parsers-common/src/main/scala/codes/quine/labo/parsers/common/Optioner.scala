@@ -1,4 +1,4 @@
-package codes.quine.labo.parsers.stackparse
+package codes.quine.labo.parsers.common
 
 trait Optioner[-A] {
   type Result
@@ -11,6 +11,8 @@ object Optioner extends LowPriorityOptioner {
     type Result = R
   }
 
+  def apply[A](implicit opt: Optioner[A]): Aux[A, opt.Result] = opt
+
   implicit val unit: Aux[Unit, Unit] = new Optioner[Unit] {
     type Result = Unit
     def none: Unit = ()
@@ -18,7 +20,7 @@ object Optioner extends LowPriorityOptioner {
   }
 }
 
-private[stackparse] trait LowPriorityOptioner {
+private[common] trait LowPriorityOptioner {
   implicit def option[A]: Optioner.Aux[A, Option[A]] = OptionOptioner.asInstanceOf[Optioner.Aux[A, Option[A]]]
 
   private object OptionOptioner extends Optioner[Any] {

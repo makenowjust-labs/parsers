@@ -21,12 +21,12 @@ ThisBuild / scalafixDependencies += "com.github.vovapolu" %% "scaluzzi" % "0.1.1
 
 lazy val root = project
   .in(file("."))
-  .aggregate(stackparse)
+  .aggregate(common, stackparse)
 
 def moduleSettings(moduleName: String) = Seq(
     organization := "codes.quine.labo",
     name := s"parsers-$moduleName",
-    version := "0.1.0-SNAPSHOT",
+    version := "0.2,0-SNAPSHOT",
     console / initialCommands := s"""
     |import codes.quine.labo.parsers.$moduleName._
     """.stripMargin,
@@ -36,6 +36,12 @@ def moduleSettings(moduleName: String) = Seq(
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
 
+lazy val common = project
+  .in(file("modules/parsers-common"))
+  .settings(
+    moduleSettings("common"),
+  )
+
 lazy val stackparse = project
   .in(file("modules/parsers-stackparse"))
   .settings(
@@ -43,3 +49,4 @@ lazy val stackparse = project
     // Dependencies:
     libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1",
   )
+  .dependsOn(common)

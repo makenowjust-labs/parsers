@@ -1,3 +1,3 @@
-# scala-labo-stackparse
+# parsers-stackparse
 
 > A stackless parser combinator library.

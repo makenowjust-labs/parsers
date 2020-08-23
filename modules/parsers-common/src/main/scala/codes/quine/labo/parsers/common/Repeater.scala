@@ -1,4 +1,4 @@
-package codes.quine.labo.parsers.stackparse
+package codes.quine.labo.parsers.common
 
 trait Repeater[-A] {
   type Result
@@ -21,7 +21,7 @@ object Repeater extends LowPriorityRepeater {
   }
 }
 
-private[stackparse] trait LowPriorityRepeater {
+private[common] trait LowPriorityRepeater {
   implicit def seq[A]: Repeater.Aux[A, Seq[A]] = SeqRepeater.asInstanceOf[Repeater.Aux[A, Seq[A]]]
 
   object SeqRepeater extends Repeater[Any] {
