@@ -78,6 +78,11 @@ object Parsing {
     def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, cut, cont)
   }
 
+  final class NoCutCont[T, R](val cont: Cont[T, R]) extends Cont[T, R] {
+    def succeed(value: T, p: Parsing, cut: Boolean): Action[R] = Success(value, p, false, cont)
+    def fail(p: Parsing, cut: Boolean): Action[R] = Failure(p, false, cont)
+  }
+
   final class RepeatCont[T, V, R](
       val parser: Parser[T],
       val min: Int,

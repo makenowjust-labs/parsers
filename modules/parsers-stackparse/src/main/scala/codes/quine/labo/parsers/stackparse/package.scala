@@ -43,6 +43,8 @@ package object stackparse {
 
   val End: P[Unit] = Parser.End
 
+  def NoCut[T](parser: P[T]): P[T] = Parser.NoCut(parser)
+
   def &?[T](parser: P[T]): P[T] = Parser.LookAhead(parser)
 
   def &!(parser: P[Any]): P[Unit] = Parser.NegativeLookAhead(parser)

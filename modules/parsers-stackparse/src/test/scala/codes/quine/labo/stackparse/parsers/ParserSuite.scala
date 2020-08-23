@@ -74,6 +74,11 @@ object ParserSuite extends SimpleTestSuite {
     assertFailure("a", End, "expected: End", 0)
   }
 
+  test("NoCut") {
+    assertSuccess("a", NoCut(AnyChar), (), 1)
+    assertSuccess("aa", NoCut("a" ~/ "b") | "aa", (), 2)
+  }
+
   test("&?") {
     assertEquals(&?(AnyChar).toString, "&?(AnyChar)")
     assertSuccess("a", &?("a"), (), 0)

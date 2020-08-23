@@ -159,6 +159,13 @@ object Parser {
       }
   }
 
+  final case class NoCut[T](parser: Parser[T]) extends Parser[T] {
+    def run[R](p: Parsing, k: Parsing.Cont[T, R]): Parsing.Action[R] =
+      Parsing.Call(parser, p, new Parsing.NoCutCont(k))
+
+    override def toString: String = s"NoCut($parser)"
+  }
+
   final case class Repeat[T, V](parser: Parser[T], min: Int, max: Int, rep: Repeater.Aux[T, V]) extends Parser[V] {
     def run[R](p: Parsing, k: Parsing.Cont[V, R]): Parsing.Action[R] =
       if (min == 0 && max == 0) Parsing.Success(rep.empty, p, false, k)
