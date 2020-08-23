@@ -25,7 +25,7 @@ object Macros {
     import c.universe._
 
     val name = s.actualType match {
-      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("[" + s + "]")))
+      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("CharIn(\"" + s + "\")")))
       case _                                 => c.Expr[String](Literal(Constant(s"CharIn(...)")))
     }
 
@@ -43,7 +43,7 @@ object Macros {
     import c.universe._
 
     val name = s.actualType match {
-      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("[" + s + "]")))
+      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("CharsWhileIn(\"" + s + "\")")))
       case _                                 => c.Expr[String](Literal(Constant(s"CharsWhileIn(...)")))
     }
 

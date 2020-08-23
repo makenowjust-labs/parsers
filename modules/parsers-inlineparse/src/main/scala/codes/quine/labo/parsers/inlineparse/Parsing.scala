@@ -28,7 +28,7 @@ final class Parsing[+T](
   @inline def unit[V](pos: Int = this.pos): Parsing[Unit] =
     success((), pos)
 
-  @inline def fail[Nothing](message: String, pos: Int = this.pos): Parsing[Nothing] = {
+  @inline def fail(message: String, pos: Int = this.pos): Parsing[Nothing] = {
     isSuccess = false
     if (namePos >= 0) appendExpected(name, namePos)
     else {
@@ -75,6 +75,6 @@ final class Parsing[+T](
 
   def toParsed: Parsed[T] =
     if (isSuccess) Parsed.Success(value.asInstanceOf[T], pos)
-    else if (message.nonEmpty) Parsed.Failure(message, pos)
-    else Parsed.Failure(s"expected: ${expected.take(expectedSize).toSeq.sorted.distinct.mkString(", ")}", pos)
+    else if (message.nonEmpty) Parsed.Failure(message, errorPos)
+    else Parsed.Failure(s"expected: ${expected.take(expectedSize).toSeq.sorted.distinct.mkString(", ")}", errorPos)
 }

@@ -15,10 +15,11 @@ package object inlineparse {
   val Parsed = common.Parsed
 
   type P[+T] = Parsing[T]
-  val P = Parsing
 
   def parse[T](input: String, parser: P[Any] => P[T]): Parsed[T] =
     parser(new Parsing(input)).toParsed
+
+  @inline def P[T](parser: P[T]): P[T] = parser
 
   @inline def Pass(implicit ctx: P[Any]): P[Unit] =
     ctx.unit()
@@ -40,8 +41,13 @@ package object inlineparse {
 
   @inline def &![T](parser: => P[T])(implicit ctx0: P[Any]): P[Unit] = {
     val prevPos = ctx0.pos
+    val prevErrorPos = ctx0.errorPos
+    // Set `p.errorPos` as `Int.MaxValue` for preventing to override an error message.
+    // Generally an error message in negative look-ahead is not useful.
+    ctx0.errorPos = Int.MaxValue
     val ctx1 = parser
-    if (ctx1.isSuccess) ctx1.fail("negative look-ahead")
+    ctx1.errorPos = prevErrorPos
+    if (ctx1.isSuccess) ctx1.fail("negative look-ahead", prevPos)
     else ctx1.unit(prevPos)
   }
 
@@ -78,6 +84,17 @@ package object inlineparse {
 
   def CharsWhileIn(s: String)(implicit ctx0: P[Any]): P[Unit] =
     macro internal.Macros.CharsWhileIn1
+
+  @inline def AnyChar(implicit ctx: P[Any]): P[Unit] =
+    if (ctx.pos < ctx.input.length) ctx.unit(ctx.pos + 1)
+    else ctx.unexpected("AnyChar")
+
+  @inline def NoCut[T](p: => P[T])(implicit ctx0: P[Any]): P[T] = {
+    val cut = ctx0.cut
+    val ctx1 = p
+    ctx1.cut = cut
+    ctx1
+  }
 
   @inline implicit def EagerOps[T](ctx1: P[T]): EagerOps[T] = new EagerOps(ctx1)
 
@@ -118,10 +135,6 @@ package object inlineparse {
         ctx2.cut = cut1 || ctx2.cut
         ctx2
       } else ctx1.coerce[V]
-
-    @inline def filter(f: T => Boolean): P[T] =
-      if (ctx1.isSuccess && f(ctx1.get)) ctx1
-      else ctx1.fail("filter")
   }
 
   @inline implicit def LazyOps[T](parser: => P[T]): LazyOps[T] = new LazyOps(() => parser)
@@ -139,12 +152,12 @@ package object inlineparse {
           val prevPos = ctx0.pos
           ctx0.cut = false
           val ctx1 = parser()
-          if (ctx1.isSuccess && (n < min || prevPos < ctx1.pos)) {
+          if (ctx1.isSuccess && (n < min || prevPos < ctx1.pos))
             loop(ctx1, rep.append(as, ctx1.get), cut || ctx1.cut, n + 1)
-          } else if (min <= n && !ctx1.cut) ctx1.success(as, prevPos, cut)
+          else if (min <= n && !ctx1.cut) ctx1.success(as, prevPos, cut)
           else {
             ctx1.cut = cut || ctx1.cut
-            ctx1.coerce[V]
+            if (prevPos == ctx1.pos) ctx1.fail("null repeat") else ctx1.coerce[V]
           }
         }
       loop(ctx0, rep.empty, ctx0.cut, 0)
@@ -172,6 +185,13 @@ package object inlineparse {
         ctx0.value = startValue
         parser2
       }
+    }
+
+    @inline def filter(f: T => Boolean)(implicit ctx0: P[Any]): P[T] = {
+      val prevPos = ctx0.pos
+      val ctx1 = parser()
+      if (ctx1.isSuccess && f(ctx1.get)) ctx1
+      else ctx1.fail("filter", prevPos)
     }
 
     @inline def named(name: String)(implicit ctx0: P[Any]): P[T] = {
