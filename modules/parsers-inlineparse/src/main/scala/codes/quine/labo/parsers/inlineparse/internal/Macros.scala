@@ -4,12 +4,14 @@ package internal
 
 import scala.reflect.macros.blackbox
 
+import common.Util
+
 object Macros {
   def StringLiteral(c: blackbox.Context)(string: c.Expr[String])(ctx: c.Expr[Parsing[Any]]): c.Expr[Parsing[Unit]] = {
     import c.universe._
 
     val name = string.actualType match {
-      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("\"" + s + "\"")))
+      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("\"" + Util.escape(s) + "\"")))
       case _                                 => c.Expr[String](Literal(Constant(s"StringLiteral(...)")))
     }
 
@@ -25,7 +27,7 @@ object Macros {
     import c.universe._
 
     val name = s.actualType match {
-      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("CharIn(\"" + s + "\")")))
+      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("CharIn(\"" + Util.escape(s) + "\")")))
       case _                                 => c.Expr[String](Literal(Constant(s"CharIn(...)")))
     }
 
@@ -43,7 +45,7 @@ object Macros {
     import c.universe._
 
     val name = s.actualType match {
-      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("CharsWhileIn(\"" + s + "\")")))
+      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("CharsWhileIn(\"" + Util.escape(s) + "\")")))
       case _                                 => c.Expr[String](Literal(Constant(s"CharsWhileIn(...)")))
     }
 
