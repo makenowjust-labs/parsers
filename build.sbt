@@ -1,7 +1,7 @@
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / githubOwner := "MakeNowJust-Labo"
-ThisBuild / githubRepository := "template-scala"
+ThisBuild / githubRepository := "parsers"
 
 ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / scalacOptions ++= Seq(
@@ -21,21 +21,25 @@ ThisBuild / scalafixDependencies += "com.github.vovapolu" %% "scaluzzi" % "0.1.1
 
 lazy val root = project
   .in(file("."))
-  .settings(
+  .aggregate(stackparse)
+
+def moduleSettings(moduleName: String) = Seq(
     organization := "codes.quine.labo",
-    name := "template",
+    name := s"parsers-$moduleName",
     version := "0.1.0-SNAPSHOT",
-    description := "MakeNowJust-Labo's Scala project template",
-    console / initialCommands := """
-      |import codes.quine.labo.template._
-      """.stripMargin,
+    console / initialCommands := s"""
+    |import codes.quine.labo.parsers.$moduleName._
+    """.stripMargin,
     Compile / console / scalacOptions -= "-Wunused",
-    // Set URL mapping of scala standard API for Scaladoc.
-    apiMappings ++= scalaInstance.value.libraryJars
-      .filter(file => file.getName.startsWith("scala-library") && file.getName.endsWith(".jar"))
-      .map(_ -> url(s"http://www.scala-lang.org/api/${scalaVersion.value}/"))
-      .toMap,
     // Settings for test:
     libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
+  )
+
+lazy val stackparse = project
+  .in(file("modules/parsers-stackparse"))
+  .settings(
+    moduleSettings("stackparse"),
+    // Dependencies:
+    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1",
   )

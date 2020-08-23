@@ -1,6 +1,6 @@
-# template-scala
+# parsers
 
-> MakeNowJust-Labo's Scala project template.
+> Scala parser combinator libraries collection.
 
 ## License
 
