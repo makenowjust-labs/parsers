@@ -1,3 +1,3 @@
-# parsers-core
+# parsers-common
 
 > Common utilities for parser combinator.
