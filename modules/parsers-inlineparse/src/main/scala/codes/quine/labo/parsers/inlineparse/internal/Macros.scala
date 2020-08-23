@@ -45,8 +45,9 @@ object Macros {
     import c.universe._
 
     val name = s.actualType match {
-      case ConstantType(Constant(s: String)) => c.Expr[String](Literal(Constant("CharsWhileIn(\"" + Util.escape(s) + "\")")))
-      case _                                 => c.Expr[String](Literal(Constant(s"CharsWhileIn(...)")))
+      case ConstantType(Constant(s: String)) =>
+        c.Expr[String](Literal(Constant("CharsWhileIn(\"" + Util.escape(s) + "\")")))
+      case _ => c.Expr[String](Literal(Constant(s"CharsWhileIn(...)")))
     }
 
     reify {
