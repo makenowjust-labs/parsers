@@ -21,6 +21,7 @@ ThisBuild / scalafixDependencies += "com.github.vovapolu" %% "scaluzzi" % "0.1.1
 
 lazy val root = project
   .in(file("."))
+  .settings(publish / skip := true)
   .aggregate(common, stackparse)
 
 def moduleSettings(moduleName: String) = Seq(
