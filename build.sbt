@@ -24,7 +24,8 @@ lazy val root = project
   .settings(publish / skip := true)
   .aggregate(common, inlineparse, stackparse)
 
-def moduleSettings(moduleName: String) = Seq(
+def moduleSettings(moduleName: String) =
+  Seq(
     organization := "codes.quine.labo",
     name := s"parsers-$moduleName",
     version := "0.2,0-SNAPSHOT",
@@ -46,7 +47,7 @@ lazy val inlineparse = project
   .settings(
     moduleSettings("inlineparse"),
     // Dependencies:
-    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
+    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value
   )
   .dependsOn(common)
 
@@ -55,6 +56,6 @@ lazy val stackparse = project
   .settings(
     moduleSettings("stackparse"),
     // Dependencies:
-    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1",
+    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1"
   )
   .dependsOn(common)
