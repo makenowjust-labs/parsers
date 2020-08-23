@@ -22,7 +22,7 @@ ThisBuild / scalafixDependencies += "com.github.vovapolu" %% "scaluzzi" % "0.1.1
 lazy val root = project
   .in(file("."))
   .settings(publish / skip := true)
-  .aggregate(common, stackparse)
+  .aggregate(common, inlineparse, stackparse)
 
 def moduleSettings(moduleName: String) = Seq(
     organization := "codes.quine.labo",
@@ -39,9 +39,16 @@ def moduleSettings(moduleName: String) = Seq(
 
 lazy val common = project
   .in(file("modules/parsers-common"))
+  .settings(moduleSettings("common"))
+
+lazy val inlineparse = project
+  .in(file("modules/parsers-inlineparse"))
   .settings(
-    moduleSettings("common"),
+    moduleSettings("inlineparse"),
+    // Dependencies:
+    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
   )
+  .dependsOn(common)
 
 lazy val stackparse = project
   .in(file("modules/parsers-stackparse"))

@@ -1,4 +1,4 @@
-package codes.quine.labo.miniparse
+package codes.quine.labo.parsers.inlineparse
 
 import scala.collection.mutable
 

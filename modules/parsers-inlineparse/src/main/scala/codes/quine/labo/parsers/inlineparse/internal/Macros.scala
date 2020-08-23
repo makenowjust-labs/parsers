@@ -1,5 +1,5 @@
-package codes.quine.labo
-package miniparse
+package codes.quine.labo.parsers
+package inlineparse
 package internal
 
 import scala.reflect.macros.blackbox

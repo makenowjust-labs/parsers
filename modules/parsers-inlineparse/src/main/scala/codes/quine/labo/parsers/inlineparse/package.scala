@@ -1,10 +1,19 @@
-package codes.quine.labo
+package codes.quine.labo.parsers
 
 import scala.annotation.tailrec
 import scala.language.experimental.macros
 import scala.language.implicitConversions
 
-package object miniparse {
+package object inlineparse {
+  type Optioner[-A] = common.Optioner[A]
+  val Optioner = common.Optioner
+  type Repeater[-A] = common.Repeater[A]
+  val Repeater = common.Repeater
+  type Sequencer[-A, -B] = common.Sequencer[A, B]
+  val Sequencer = common.Sequencer
+  type Parsed[+A] = common.Parsed[A]
+  val Parsed = common.Parsed
+
   type P[+T] = Parsing[T]
   val P = Parsing
 
@@ -72,7 +81,7 @@ package object miniparse {
 
   @inline implicit def EagerOps[T](ctx1: P[T]): EagerOps[T] = new EagerOps(ctx1)
 
-  @inline implicit def StringLiteralEagerOps(string: String)(implicit ctx: P[Any]): miniparse.EagerOps[Unit] =
+  @inline implicit def StringLiteralEagerOps(string: String)(implicit ctx: P[Any]): inlineparse.EagerOps[Unit] =
     macro internal.Macros.StringLiteralEagerOps
 
   final class EagerOps[T](val ctx1: P[T]) extends AnyVal {
@@ -117,30 +126,28 @@ package object miniparse {
 
   @inline implicit def LazyOps[T](parser: => P[T]): LazyOps[T] = new LazyOps(() => parser)
 
-  implicit def StringLiteralLazyOps(string: String)(implicit ctx: P[Any]): miniparse.LazyOps[Unit] =
+  implicit def StringLiteralLazyOps(string: String)(implicit ctx: P[Any]): inlineparse.LazyOps[Unit] =
     macro internal.Macros.StringLiteralLazyOps
 
   final class LazyOps[T](val parser: () => P[T]) extends AnyVal {
     @inline def rep[V](implicit ctx0: P[Any], rep: Repeater.Aux[T, V]): P[V] = this.rep(min = 0)
 
     @inline def rep[V](min: Int, max: Int = Int.MaxValue)(implicit ctx0: P[Any], rep: Repeater.Aux[T, V]): P[V] = {
-      val b = rep.builder
-      @tailrec def loop(ctx0: P[Any], cut: Boolean, n: Int): P[V] =
-        if (n == max) ctx0.success(rep.result(b))
+      @tailrec def loop(ctx0: P[Any], as: V, cut: Boolean, n: Int): P[V] =
+        if (n == max) ctx0.success(as)
         else {
           val prevPos = ctx0.pos
           ctx0.cut = false
           val ctx1 = parser()
           if (ctx1.isSuccess && (n < min || prevPos < ctx1.pos)) {
-            rep.append(b, ctx1.get)
-            loop(ctx1, cut || ctx1.cut, n + 1)
-          } else if (min <= n && !ctx1.cut) ctx1.success(rep.result(b), prevPos, cut)
+            loop(ctx1, rep.append(as, ctx1.get), cut || ctx1.cut, n + 1)
+          } else if (min <= n && !ctx1.cut) ctx1.success(as, prevPos, cut)
           else {
             ctx1.cut = cut || ctx1.cut
             ctx1.coerce[V]
           }
         }
-      loop(ctx0, ctx0.cut, 0)
+      loop(ctx0, rep.empty, ctx0.cut, 0)
     }
 
     @inline def count[V](n: Int)(implicit ctx0: P[Any], rep: Repeater.Aux[T, V]): P[V] =
