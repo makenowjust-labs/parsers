@@ -1,0 +1,14 @@
+name: Scala
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Scala CI
+    steps:
+      - uses: actions/checkout@v2
+      - name: Format and Lint
+        run: sbt scalafmtCheckAll scalafmtSbtCheck 'scalafixAll --check'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
