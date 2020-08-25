@@ -1,3 +1,9 @@
+# dev
+
+Changes:
+
+  - (parsers-funcparse): Add `parsers-funcparse`.
+
 # 0.2.0 (2020-08-23)
 
 Changes:
