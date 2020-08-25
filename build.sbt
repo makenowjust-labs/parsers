@@ -45,7 +45,7 @@ lazy val bench = project
     libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
-  .dependsOn(inlineparse, stackparse)
+  .dependsOn(funcparse, inlineparse, stackparse)
   .enablePlugins(JmhPlugin)
 
 def moduleSettings(moduleName: String) =
@@ -65,6 +65,15 @@ def moduleSettings(moduleName: String) =
 lazy val common = project
   .in(file("modules/parsers-common"))
   .settings(moduleSettings("common"))
+
+lazy val funcparse = project
+  .in(file("modules/parsers-funcparse"))
+  .settings(
+    moduleSettings("funcparse"),
+    // Dependencies:
+    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1"
+  )
+  .dependsOn(common)
 
 lazy val inlineparse = project
   .in(file("modules/parsers-inlineparse"))

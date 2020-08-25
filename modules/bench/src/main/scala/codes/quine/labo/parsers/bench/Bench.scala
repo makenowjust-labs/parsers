@@ -13,6 +13,10 @@ class Bench {
     FastparseJSONParser.parse(Bench.source)
 
   @Benchmark
+  def measureFuncparse(): funcparse.Parsed[JSON] =
+    FuncparseJSONParser.parse(Bench.source)
+
+  @Benchmark
   def measureInlineparse(): inlineparse.Parsed[JSON] =
     InlineparseJSONParser.parse(Bench.source)
 
