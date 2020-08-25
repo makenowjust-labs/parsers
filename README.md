@@ -7,6 +7,7 @@
 This repository contains the following libraries:
 
   - [`parsers-common`](modules/parsers-common): Common utilities for parser combinator.
+  - [`parsers-funcparse`](modules/parsers-funcparse): A basic functional parser combinator library.
   - [`parsers-inlineparse`](modules/parsers-inlineparse): A faster parser combinator library with mutable state & inline expansion.
   - [`parsers-stackparse`](modules/parsers-stackparse): A stackless parser combinator library.
 
