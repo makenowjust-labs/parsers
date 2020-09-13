@@ -23,8 +23,8 @@ object ParserCombinatorsJSONParser extends RegexParsers {
 
   def hexDigit: Parser[String] = "[0123456789abcdefABCDEF]".r
   def unicodeEscape: Parser[Char] =
-    "u" ~> (hexDigit ~ hexDigit ~ hexDigit ~ hexDigit).map {
-      case d1 ~ d2 ~ d3 ~ d4 => Integer.parseInt(d1 + d2 + d3 + d4, 16).toChar
+    "u" ~> (hexDigit ~ hexDigit ~ hexDigit ~ hexDigit).map { case d1 ~ d2 ~ d3 ~ d4 =>
+      Integer.parseInt(d1 + d2 + d3 + d4, 16).toChar
     }
   def simpleEscape: Parser[Char] =
     "[\"\\/bfnrt]".r.map(s =>
