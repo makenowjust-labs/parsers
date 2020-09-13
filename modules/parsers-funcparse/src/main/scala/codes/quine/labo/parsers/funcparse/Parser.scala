@@ -110,7 +110,7 @@ object Parser {
       if (p.pos == 0) Parsing.Success((), p, false)
       else Parsing.Failure(p.unexpected(toString), false)
 
-      override def toString: String = "Start"
+    override def toString: String = "Start"
   }
 
   case object End extends Parser[Unit] {
@@ -125,7 +125,7 @@ object Parser {
     def apply(p0: Parsing): Parsing.Step[String] =
       parser.apply(p0) match {
         case Parsing.Success(_, p1, cut) => Parsing.Success(p0.input.slice(p0.pos, p1.pos), p1, cut)
-        case Parsing.Failure(p1, cut) => Parsing.Failure(p1, cut)
+        case Parsing.Failure(p1, cut)    => Parsing.Failure(p1, cut)
       }
 
     override def toString: String =
@@ -135,12 +135,14 @@ object Parser {
       }
   }
 
-  final case class Sequence[T, U, V](parser1: Parser[T], parser2: Parser[U], cut: Boolean, seq: Sequencer.Aux[T, U, V]) extends Parser[V] {
+  final case class Sequence[T, U, V](parser1: Parser[T], parser2: Parser[U], cut: Boolean, seq: Sequencer.Aux[T, U, V])
+      extends Parser[V] {
     def apply(p0: Parsing): Parsing.Step[V] = parser1.apply(p0) match {
-      case Parsing.Success(v1, p1, cut1) => parser2.apply(p1) match {
-        case Parsing.Success(v2, p2, cut2) => Parsing.Success(seq.apply(v1, v2), p2, cut1 || cut || cut2)
-        case Parsing.Failure(p2, cut2) => Parsing.Failure(p2, cut1 || cut || cut2)
-      }
+      case Parsing.Success(v1, p1, cut1) =>
+        parser2.apply(p1) match {
+          case Parsing.Success(v2, p2, cut2) => Parsing.Success(seq.apply(v1, v2), p2, cut1 || cut || cut2)
+          case Parsing.Failure(p2, cut2)     => Parsing.Failure(p2, cut1 || cut || cut2)
+        }
       case Parsing.Failure(p1, cut1) => Parsing.Failure(p1, cut1)
     }
 
@@ -177,25 +179,33 @@ object Parser {
     def apply(p0: Parsing): Parsing.Step[T] =
       parser.apply(p0) match {
         case Parsing.Success(v, p1, _) => Parsing.Success(v, p1, false)
-        case Parsing.Failure(p1, _) => Parsing.Failure(p1, false)
+        case Parsing.Failure(p1, _)    => Parsing.Failure(p1, false)
       }
 
     override def toString: String = s"NoCut($parser)"
   }
 
-  private def parseRepeat[T, V](parser: Parser[T], min: Int, max: Int, rep: Repeater.Aux[T, V], p: Parsing): Parsing.Step[V] = {
+  private def parseRepeat[T, V](
+      parser: Parser[T],
+      min: Int,
+      max: Int,
+      rep: Repeater.Aux[T, V],
+      p: Parsing
+  ): Parsing.Step[V] = {
     @tailrec def loop(p0: Parsing, as: V, cut: Boolean, n: Int): Parsing.Step[V] =
       if (n == max) Parsing.Success(as, p0, cut)
       else if (n < min) parser.apply(p0) match {
         case Parsing.Success(a, p1, cut1) => loop(p1, rep.append(as, a), cut || cut1, n + 1)
-        case Parsing.Failure(p1, cut1) => Parsing.Failure(p1, cut || cut1)
-      } else parser.apply(p0) match {
-        case Parsing.Success(_, p1, true) if p0.pos == p1.pos => Parsing.Failure(p1.fail("null repeat"), true)
-        case Parsing.Success(_, p1, false) if p0.pos == p1.pos => Parsing.Success(as, p1, cut)
-        case Parsing.Success(a, p1, cut1) => loop(p1, rep.append(as, a), cut || cut1, n + 1)
-        case Parsing.Failure(p1, true) => Parsing.Failure(p1, true)
-        case Parsing.Failure(p1, false) => Parsing.Success(as, p1.reset(p0.pos), cut)
+        case Parsing.Failure(p1, cut1)    => Parsing.Failure(p1, cut || cut1)
       }
+      else
+        parser.apply(p0) match {
+          case Parsing.Success(_, p1, true) if p0.pos == p1.pos  => Parsing.Failure(p1.fail("null repeat"), true)
+          case Parsing.Success(_, p1, false) if p0.pos == p1.pos => Parsing.Success(as, p1, cut)
+          case Parsing.Success(a, p1, cut1)                      => loop(p1, rep.append(as, a), cut || cut1, n + 1)
+          case Parsing.Failure(p1, true)                         => Parsing.Failure(p1, true)
+          case Parsing.Failure(p1, false)                        => Parsing.Success(as, p1.reset(p0.pos), cut)
+        }
     loop(p, rep.empty, false, 0)
   }
 
@@ -229,8 +239,8 @@ object Parser {
     def apply(p0: Parsing): Parsing.Step[V] =
       parser.apply(p0) match {
         case Parsing.Success(v, p1, cut) => Parsing.Success(opt.some(v), p1, cut)
-        case Parsing.Failure(p1, true) => Parsing.Failure(p1, true)
-        case Parsing.Failure(p1, false) => Parsing.Success(opt.none, p1.reset(p0.pos), false)
+        case Parsing.Failure(p1, true)   => Parsing.Failure(p1, true)
+        case Parsing.Failure(p1, false)  => Parsing.Success(opt.none, p1.reset(p0.pos), false)
       }
 
     override def toString: String =
@@ -244,11 +254,12 @@ object Parser {
     def apply(p0: Parsing): Parsing.Step[T] =
       parser1.apply(p0) match {
         case Parsing.Success(a, p1, cut1) => Parsing.Success(a, p1, cut1)
-        case Parsing.Failure(p1, true) => Parsing.Failure(p1, true)
-        case Parsing.Failure(p1, false) => parser2.apply(p1.reset(p0.pos)) match {
-          case Parsing.Success(a, p2, cut2) => Parsing.Success(a, p2, cut2)
-          case Parsing.Failure(p2, cut2) => Parsing.Failure(p2, cut2)
-        }
+        case Parsing.Failure(p1, true)    => Parsing.Failure(p1, true)
+        case Parsing.Failure(p1, false) =>
+          parser2.apply(p1.reset(p0.pos)) match {
+            case Parsing.Success(a, p2, cut2) => Parsing.Success(a, p2, cut2)
+            case Parsing.Failure(p2, cut2)    => Parsing.Failure(p2, cut2)
+          }
       }
 
     override def toString: String = s"$parser1 | $parser2"
@@ -258,7 +269,7 @@ object Parser {
     def apply(p0: Parsing): Parsing.Step[T] =
       parser.apply(p0) match {
         case Parsing.Success(a, p1, cut1) => Parsing.Success(a, p1.reset(p0.pos), cut1)
-        case Parsing.Failure(p1, cut1) => Parsing.Failure(p1, cut1)
+        case Parsing.Failure(p1, cut1)    => Parsing.Failure(p1, cut1)
       }
 
     override def toString: String = s"&?($parser)"
@@ -269,7 +280,8 @@ object Parser {
       // Set `p0.errorPos` as `Int.MaxValue` for preventing to override an error message.
       // Generally an error message in negative look-ahead is not useful.
       parser.apply(p0.copy(errorPos = Int.MaxValue)) match {
-        case Parsing.Success(_, p1, cut1) => Parsing.Failure(p1.copy(errorPos = p0.errorPos).fail(message, p0.pos), cut1)
+        case Parsing.Success(_, p1, cut1) =>
+          Parsing.Failure(p1.copy(errorPos = p0.errorPos).fail(message, p0.pos), cut1)
         case Parsing.Failure(p1, cut1) => Parsing.Success((), p1.copy(errorPos = p0.errorPos).reset(p0.pos), cut1)
       }
 
@@ -282,7 +294,7 @@ object Parser {
     def apply(p0: Parsing): Parsing.Step[U] =
       parser.apply(p0) match {
         case Parsing.Success(a, p1, cut1) => Parsing.Success(f(a), p1, cut1)
-        case Parsing.Failure(p1, cut1) => Parsing.Failure(p1, cut1)
+        case Parsing.Failure(p1, cut1)    => Parsing.Failure(p1, cut1)
       }
 
     override def toString: String =
@@ -295,10 +307,11 @@ object Parser {
   final case class FlatMap[T, U](parser: Parser[T], f: T => Parser[U]) extends Parser[U] {
     def apply(p0: Parsing): Parsing.Step[U] =
       parser.apply(p0) match {
-        case Parsing.Success(v1, p1, cut1) => f(v1).apply(p1) match {
-          case Parsing.Success(v2, p2, cut2) => Parsing.Success(v2, p2, cut1 || cut2)
-          case Parsing.Failure(p2, cut2) => Parsing.Failure(p2, cut1 || cut2)
-        }
+        case Parsing.Success(v1, p1, cut1) =>
+          f(v1).apply(p1) match {
+            case Parsing.Success(v2, p2, cut2) => Parsing.Success(v2, p2, cut1 || cut2)
+            case Parsing.Failure(p2, cut2)     => Parsing.Failure(p2, cut1 || cut2)
+          }
         case Parsing.Failure(p1, cut1) => Parsing.Failure(p1, cut1)
       }
 
@@ -312,8 +325,8 @@ object Parser {
   final case class Filter[T](parser: Parser[T], f: T => Boolean) extends Parser[T] {
     def apply(p0: Parsing): Parsing.Step[T] = parser.apply(p0) match {
       case Parsing.Success(a, p1, cut1) if f(a) => Parsing.Success(a, p1, cut1)
-      case Parsing.Success(_, p1, cut1) => Parsing.Failure(p1.fail("filter", p0.pos), cut1)
-      case Parsing.Failure(p1, cut1) => Parsing.Failure(p1, cut1)
+      case Parsing.Success(_, p1, cut1)         => Parsing.Failure(p1.fail("filter", p0.pos), cut1)
+      case Parsing.Failure(p1, cut1)            => Parsing.Failure(p1, cut1)
     }
 
     override def toString: String = {
@@ -336,7 +349,7 @@ object Parser {
     def apply(p0: Parsing): Parsing.Step[T] =
       parser.apply(p0.named(name)) match {
         case Parsing.Success(a, p1, cut1) => Parsing.Success(a, p1.named(p0.name, p0.namePos), cut1)
-        case Parsing.Failure(p1, cut1) => Parsing.Failure(p1.named(p0.name, p0.namePos), cut1)
+        case Parsing.Failure(p1, cut1)    => Parsing.Failure(p1.named(p0.name, p0.namePos), cut1)
       }
 
     override def toString: String = {
