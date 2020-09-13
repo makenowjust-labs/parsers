@@ -22,7 +22,7 @@ ThisBuild / scalafixDependencies += "com.github.vovapolu" %% "scaluzzi" % "0.1.1
 lazy val root = project
   .in(file("."))
   .settings(publish / skip := true)
-  .aggregate(bench, common, inlineparse, stackparse)
+  .aggregate(bench, common, funcparse, inlineparse, stackparse)
 
 lazy val bench = project
   .in(file("modules/bench"))
