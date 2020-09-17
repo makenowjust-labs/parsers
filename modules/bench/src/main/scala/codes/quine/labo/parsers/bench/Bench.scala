@@ -9,6 +9,10 @@ class Bench {
     AttoJSONParser.parse(Bench.source)
 
   @Benchmark
+  def measureContparse(): contparse.Parsed[JSON] =
+    ContparseJSONParser.parse(Bench.source)
+
+  @Benchmark
   def measureFastparse(): fastparse.Parsed[JSON] =
     FastparseJSONParser.parse(Bench.source)
 

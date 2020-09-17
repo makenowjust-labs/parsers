@@ -286,7 +286,6 @@ object Parser {
       }
 
     lazy val message: String = s"unexpected: $parser"
-
     override def toString: String = s"&!($parser)"
   }
 

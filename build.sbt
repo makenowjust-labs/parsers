@@ -22,7 +22,7 @@ ThisBuild / scalafixDependencies += "com.github.vovapolu" %% "scaluzzi" % "0.1.1
 lazy val root = project
   .in(file("."))
   .settings(publish / skip := true)
-  .aggregate(bench, common, funcparse, inlineparse, stackparse)
+  .aggregate(bench, common, contparse, funcparse, inlineparse, stackparse)
 
 lazy val bench = project
   .in(file("modules/bench"))
@@ -45,7 +45,7 @@ lazy val bench = project
     libraryDependencies += "io.monix" %% "minitest" % "2.8.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
-  .dependsOn(funcparse, inlineparse, stackparse)
+  .dependsOn(contparse, funcparse, inlineparse, stackparse)
   .enablePlugins(JmhPlugin)
 
 def moduleSettings(moduleName: String) =
@@ -65,6 +65,15 @@ def moduleSettings(moduleName: String) =
 lazy val common = project
   .in(file("modules/parsers-common"))
   .settings(moduleSettings("common"))
+
+lazy val contparse = project
+  .in(file("modules/parsers-contparse"))
+  .settings(
+    moduleSettings("contparse"),
+    // Dependencies:
+    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1"
+  )
+  .dependsOn(common)
 
 lazy val funcparse = project
   .in(file("modules/parsers-funcparse"))
