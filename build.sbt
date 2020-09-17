@@ -52,7 +52,7 @@ def moduleSettings(moduleName: String) =
   Seq(
     organization := "codes.quine.labo",
     name := s"parsers-$moduleName",
-    version := "0.2.1-SNAPSHOT",
+    version := "0.2.1",
     console / initialCommands := s"""
     |import codes.quine.labo.parsers.$moduleName._
     """.stripMargin,

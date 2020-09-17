@@ -1,7 +1,8 @@
-# dev
+# 0.2.1 (2020-09-17)
 
 Changes:
 
+  - (parsers-contparse): Add `parsers-contparse`.
   - (parsers-funcparse): Add `parsers-funcparse`.
 
 # 0.2.0 (2020-08-23)
