@@ -42,7 +42,7 @@ lazy val bench = project
     libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
     libraryDependencies += "org.tpolecat" %% "atto-core" % "0.8.0",
     // Settings for test:
-    libraryDependencies += "io.monix" %% "minitest" % "2.9.1" % Test,
+    libraryDependencies += "io.monix" %% "minitest" % "2.9.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
   .dependsOn(contparse, funcparse, inlineparse, stackparse)
@@ -58,7 +58,7 @@ def moduleSettings(moduleName: String) =
     """.stripMargin,
     Compile / console / scalacOptions -= "-Wunused",
     // Settings for test:
-    libraryDependencies += "io.monix" %% "minitest" % "2.9.1" % Test,
+    libraryDependencies += "io.monix" %% "minitest" % "2.9.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
   )
 
