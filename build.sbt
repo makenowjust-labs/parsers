@@ -71,7 +71,7 @@ lazy val contparse = project
   .settings(
     moduleSettings("contparse"),
     // Dependencies:
-    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1"
+    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.3"
   )
   .dependsOn(common)
 
@@ -80,7 +80,7 @@ lazy val funcparse = project
   .settings(
     moduleSettings("funcparse"),
     // Dependencies:
-    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1"
+    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.3"
   )
   .dependsOn(common)
 
@@ -98,6 +98,6 @@ lazy val stackparse = project
   .settings(
     moduleSettings("stackparse"),
     // Dependencies:
-    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.1"
+    libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.3"
   )
   .dependsOn(common)
