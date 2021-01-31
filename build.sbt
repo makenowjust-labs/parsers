@@ -38,7 +38,7 @@ lazy val bench = project
       "-opt-warnings"
     ),
     // Dependencies:
-    libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.3.0",
+    libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.3.1",
     libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
     libraryDependencies += "org.tpolecat" %% "atto-core" % "0.9.0",
     // Settings for test:
