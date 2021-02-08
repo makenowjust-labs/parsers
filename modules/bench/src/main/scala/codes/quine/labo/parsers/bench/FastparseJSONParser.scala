@@ -1,9 +1,9 @@
 package codes.quine.labo.parsers.bench
 
-import scala.annotation.switch
-
 import fastparse.NoWhitespace._
 import fastparse._
+
+import scala.annotation.switch
 
 import JSON._
 

@@ -1,9 +1,9 @@
 package codes.quine.labo.parsers.bench
 
-import scala.annotation.switch
-
 import atto.Atto._
 import atto._
+
+import scala.annotation.switch
 
 import JSON._
 
