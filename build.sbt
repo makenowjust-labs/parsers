@@ -40,7 +40,7 @@ lazy val bench = project
     // Dependencies:
     libraryDependencies += "com.lihaoyi" %% "fastparse" % "2.3.1",
     libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
-    libraryDependencies += "org.tpolecat" %% "atto-core" % "0.9.0",
+    libraryDependencies += "org.tpolecat" %% "atto-core" % "0.9.1",
     // Settings for test:
     libraryDependencies += "io.monix" %% "minitest" % "2.9.2" % Test,
     testFrameworks += new TestFramework("minitest.runner.Framework")
